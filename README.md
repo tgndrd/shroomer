@@ -4,15 +4,24 @@
 - [Symfony](https://symfony.com)
 - [FrankenPHP](https://frankenphp.dev) and [Caddy](https://caddyserver.com/) 
 
-![CI](https://github.com/dunglas/symfony-docker/workflows/CI/badge.svg)
 
 ## Getting Started
 
-1. If not already done, [install Docker Compose](https://docs.docker.com/compose/install/) (v2.10+)
-2. Run `docker compose build --no-cache` to build fresh images
-3. Run `docker compose up --pull always -d --wait` to set up and start a fresh Symfony project
-4. Open `https://localhost` in your favorite web browser and [accept the auto-generated TLS certificate](https://stackoverflow.com/a/15076602/1352334)
-5. Run `docker compose down --remove-orphans` to stop the Docker containers.
+The project is:
+- running with docker and docker compose, you must have it installed,
+- manageable with makefile, you must have the make command available,
+
+Build and start the application server with:
+```shell
+make start 
+```
+
+Start the front end server (dev):
+```shell
+make node-start-dev
+```
+
+The front end is available at [localhost:5173](http://localhost:5173/)
 
 ## DayToDay usage
 

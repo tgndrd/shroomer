@@ -43,6 +43,9 @@ bash: ## Connect to the FrankenPHP container via bash so up and down arrows go t
 node-bash: ## Connect to the node container via sh
 	@$(NODE_CONT) sh
 
+node-start-dev: ## Start the node server in dev
+	@$(NODE_CONT) npm run dev --host
+
 db-bash: ## Connect to the database container via sh
 	@$(DATABASE_CONT) sh
 
