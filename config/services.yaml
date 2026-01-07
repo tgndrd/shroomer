@@ -1,0 +1,44 @@
+# This file is the entry point to configure your own services.
+# Files in the packages/ subdirectory configure your dependencies.
+
+# Put parameters here that don't need to change on each machine where the app is deployed
+# https://symfony.com/doc/current/best_practices.html#use-parameters-for-application-configuration
+parameters:
+
+services:
+    # default configuration for services in *this* file
+    _defaults:
+        autowire: true      # Automatically injects dependencies in your services.
+        autoconfigure: true # Automatically registers your services as commands, event subscribers, etc.
+
+    # makes classes in src/ available to be used as services
+    # this creates a service per class whose id is the fully-qualified class name
+    App\:
+        resource: '../src/'
+        exclude:
+            - '../src/DependencyInjection/'
+            - '../src/Entity/'
+            - '../src/Kernel.php'
+    _instanceof:
+        App\Generator\Weather\WeatherGeneratorInterface:
+            tags: ['app.generator.weather_generator']
+        App\Generator\Mycelium\ConditionBag\ConditionBagBuilderInterface:
+            tags: ['app.generator.mycelium_condition_bag_builder']
+        App\ConditionResolver\ConditionResolverInterface:
+            tags: ['app.condition.condition_resolver']
+
+    App\Generator\Weather\ChainWeatherGenerator:
+        arguments:
+            $generators: !tagged app.generator.weather_generator
+            
+    App\Generator\Mycelium\ConditionBag\ConditionBagBuilder:
+        arguments:
+            $conditionBagBuilders: !tagged app.generator.mycelium_condition_bag_builder
+            
+    App\ConditionResolver\ChainConditionResolver:
+        arguments:
+            $conditionResolvers: !tagged app.condition.condition_resolver
+            
+    App\State\UserPasswordHasher:
+        bind:
+            $processor: '@api_platform.doctrine.orm.state.persist_processor'
