@@ -26,6 +26,11 @@ Start the front end server (dev):
 make node-start-dev
 ```
 
+Run the shroomer generator:
+```shell
+make consume-message
+```
+
 The front end is available at [localhost:5173](http://localhost:5173/)
 
 ## DayToDay usage
