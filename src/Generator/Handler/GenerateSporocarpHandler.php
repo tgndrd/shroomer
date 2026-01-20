@@ -12,7 +12,7 @@ use Psr\EventDispatcher\EventDispatcherInterface;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Scheduler\Attribute\AsPeriodicTask;
 
-#[AsPeriodicTask(frequency: '7 seconds')]
+#[AsPeriodicTask(frequency: '15 seconds')]
 readonly class GenerateSporocarpHandler
 {
     public const int DEFAULT_CONSUME_CHANCE = 2;

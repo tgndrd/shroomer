@@ -11,7 +11,7 @@ use Psr\Log\LoggerInterface;
 use RuntimeException;
 use Symfony\Component\Scheduler\Attribute\AsPeriodicTask;
 
-#[AsPeriodicTask(frequency: '35 seconds')]
+#[AsPeriodicTask(frequency: '1 minutes')]
 class GenerateWeatherHandler
 {
     public function __construct(

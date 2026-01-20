@@ -13,7 +13,7 @@ use Psr\Log\LoggerInterface;
 use RuntimeException;
 use Symfony\Component\Scheduler\Attribute\AsPeriodicTask;
 
-#[AsPeriodicTask(frequency: '21 seconds')]
+#[AsPeriodicTask(frequency: '30 seconds')]
 readonly class GenerateTreeHandler
 {
     /**
