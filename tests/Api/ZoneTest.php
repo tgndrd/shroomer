@@ -71,6 +71,17 @@ class ZoneTest extends ApiTestCase
         self::assertArrayHasKey('name', $jsonResponse);
         self::assertSame(ZoneFixtures::FIRST_ZONE_REFERENCE, $jsonResponse['name']);
 
+        // zone weather assertions
+        self::assertArrayHasKey('weather', $jsonResponse);
+        self::assertIsArray($jsonResponse['weather']);
+        $weather = $jsonResponse['weather'];
+        self::assertArrayHasKey('humidity', $weather);
+        self::assertArrayHasKey('maxTemperature', $weather);
+        self::assertArrayHasKey('minTemperature', $weather);
+        self::assertArrayHasKey('state', $weather);
+
+
+        // zone's three / mycelium assertions
         self::assertArrayNotHasKey('myceliums', $jsonResponse, 'it must not exposed mycelium!');
         self::assertArrayHasKey('trees', $jsonResponse, 'it must exposed tree');
 
@@ -91,6 +102,7 @@ class ZoneTest extends ApiTestCase
         self::assertSame('/api/tree_genuses_enums/Fraxinus', $firstTree['genus']);
         self::assertSame('f', $firstTree['letter']);
 
+        // tree slot assertions
         self::assertIsArray($firstTree['slot_1']);
         $slotOne = $firstTree['slot_1'];
         self::assertArrayHasKey('genus', $slotOne);
