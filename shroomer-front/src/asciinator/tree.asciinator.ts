@@ -1,8 +1,26 @@
 /// <reference lib="es2021" />
 
+/**
+ * The class is used to recover tree template, according to its size and id.
+ *
+ * The tree size will give different templates size:
+ * - template_0 are 36 chars long (3 * subtree size),
+ * - template_1_2 are 60 chars long (5 * subtree size),
+ * - template_3_4 are 84 chars long (7 * subtree size),
+ *
+ * This match with subtree size:
+ * - a mycelium spot (empty or not empty) is 12 chars long
+ * - a trunk is always 12 chars long
+ */
 class TreeAsciinator {
+  static TREE_LINE_COUNT = 35
+
+  static TEMPLATE_0_LENGTH = 36
+  static TEMPLATE_1_2_LENGTH = 60
+  static TEMPLATE_3_4_LENGTH = 84
+
   // TEMPLATE 0
-  static template_0 = [
+  static TEMPLATE_0 = [
     '                                    \n' +
     '                                    \n' +
     '        ZzZ                         \n' +
@@ -100,7 +118,7 @@ class TreeAsciinator {
 
   ]
 
-  static template_1_2 =  [
+  static TEMPLATE_1_2 =  [
     '                                                            \n' +
     '                            zZz  ZzzZ                       \n' +
     '         Z   ZzZ           zzzzZZzZz   zz                   \n' +
@@ -382,7 +400,7 @@ class TreeAsciinator {
     '                              ||                            \n',
   ]
 
-  static template_3_4 = [
+  static TEMPLATE_3_4 = [
     '                                                                                    \n' +
     '                                                                                    \n' +
     '                                        ZZZZz                                       \n' +
@@ -978,14 +996,36 @@ class TreeAsciinator {
   public prepareTemplate(size: number, id: number): string
   {
     if (0 == size) {
-      return TreeAsciinator.template_0[id % TreeAsciinator.template_0.length]
+      return this.fillTree(
+        TreeAsciinator.TEMPLATE_0[id % TreeAsciinator.TEMPLATE_0.length],
+        TreeAsciinator.TEMPLATE_0_LENGTH
+      )
     }
 
     if (2 >= size) {
-      return TreeAsciinator.template_1_2[id % TreeAsciinator.template_1_2.length]
+      return this.fillTree(
+        TreeAsciinator.TEMPLATE_1_2[id % TreeAsciinator.TEMPLATE_1_2.length],
+        TreeAsciinator.TEMPLATE_1_2_LENGTH
+      )
     }
 
-    return TreeAsciinator.template_3_4[id % TreeAsciinator.template_3_4.length]
+    return this.fillTree(
+      TreeAsciinator.TEMPLATE_3_4[id % TreeAsciinator.TEMPLATE_3_4.length],
+      TreeAsciinator.TEMPLATE_3_4_LENGTH
+    )
+  }
+
+  private fillTree(template: string, lineLength: number): string
+  {
+    const fillChar = ' '
+    const fillLine = fillChar.repeat(lineLength)
+
+    const lines = template.split('\n')
+
+    const missingLinesCount = TreeAsciinator.TREE_LINE_COUNT - lines.length
+    const missingLines = Array(missingLinesCount).fill(fillLine).join('\n')
+
+    return missingLines + `\n` + template
   }
 
   public prepareTrunk(template: string): string
