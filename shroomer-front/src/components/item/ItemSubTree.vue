@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import {onBeforeMount, ref, watch} from "vue";
+import { onBeforeMount, onUnmounted, ref } from 'vue'
 import SubTreeAsciinator from "@/asciinator/sub.tree.asciinator.ts";
 import WeatherAsciinator from "@/asciinator/weather.asciinator.ts";
 
@@ -8,24 +8,28 @@ const props = defineProps({
     genus: {type: String, required: true},
     size: {type: Number, required: true}
   },
-  weather_state: {type: String, required: true}
+  weatherState: {type: String, required: true}
 })
 
 const template = ref('')
-watch(() => props.subtree, () => {
-  refresh()
-})
+let interval = setInterval(() => {}, 10000)
 
 function refresh() {
-  let used_template = SubTreeAsciinator.prepareTemplate(props.subtree.size, props.subtree.genus)
-  used_template = WeatherAsciinator.prepareWeather(used_template, props.weather_state)
+  let usedtemplate = SubTreeAsciinator.prepareTemplate(props.subtree.size, props.subtree.genus)
+  usedtemplate = WeatherAsciinator.prepareWeather(usedtemplate, props.weatherState)
+  template.value = usedtemplate
 
-  template.value = used_template
+  clearInterval(interval)
+  interval = setInterval(function() {
+    refresh()
+  }, WeatherAsciinator.getRefreshRate(props.weatherState))
 }
 
 onBeforeMount(() => {
   refresh()
 })
+
+onUnmounted(() => clearInterval(interval))
 </script>
 
 <template><pre class="inline-block text-gray-300" v-html="template"></pre></template>
