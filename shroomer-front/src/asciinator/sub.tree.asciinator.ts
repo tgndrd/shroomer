@@ -1,12 +1,12 @@
 /// <reference lib="es2021" />
 
-interface Template {
+interface NamedTemplate {
   [key: string]:string
 }
 
 class SubTreeAsciinator {
 // TEMPLATE 0_5
-  static template_0: Template = {
+  static TEMPLATE_0: NamedTemplate = {
     boletus:
       '            \n' +
       '   _---_    \n' +
@@ -50,7 +50,7 @@ class SubTreeAsciinator {
       '<span class="text-green-800">__.__.__.___</span>',
   }
 
-  static template_5: Template = {
+  static TEMPLATE_5: NamedTemplate = {
     boletus:
       '   _---_    \n' +
       ' /       \\  \n' +
@@ -103,10 +103,10 @@ class SubTreeAsciinator {
   prepareTemplate(size: number, type: string): string
   {
     if(5 <= size) {
-      return SubTreeAsciinator.template_5[type] ?? SubTreeAsciinator.template_5.default
+      return SubTreeAsciinator.TEMPLATE_5[type] ?? SubTreeAsciinator.TEMPLATE_5.default
     }
 
-    return SubTreeAsciinator.template_0[type] ?? SubTreeAsciinator.template_0.default
+    return SubTreeAsciinator.TEMPLATE_0[type] ?? SubTreeAsciinator.TEMPLATE_0.default
   }
 }
 

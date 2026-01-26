@@ -14,11 +14,13 @@ use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping\Entity;
 use Doctrine\ORM\Mapping\Column;
 use Doctrine\ORM\Mapping\GeneratedValue;
+use Doctrine\ORM\Mapping\HasLifecycleCallbacks;
 use Doctrine\ORM\Mapping\Id;
 use Doctrine\ORM\Mapping\JoinColumn;
 use Doctrine\ORM\Mapping\ManyToOne;
 use Doctrine\ORM\Mapping\OneToMany;
 use Doctrine\ORM\Mapping\OrderBy;
+use Doctrine\ORM\Mapping\PrePersist;
 use Symfony\Component\Serializer\Annotation\Groups;
 
 #[Entity(repositoryClass: ZoneRepository::class)]
@@ -29,6 +31,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
     normalizationContext: ['groups' => [self::GROUP_ZONES]],
     security: "is_granted('zone_list', user)"
 )]
+#[HasLifecycleCallbacks]
 class Zone
 {
     public const string GROUP_ZONES = 'zones';
@@ -52,32 +55,33 @@ class Zone
     #[OrderBy(['id' => 'ASC'])]
     private Collection $trees;
 
-    #[OneToMany(targetEntity: Weather::class, mappedBy: 'zone')]
+    #[OneToMany(targetEntity: Weather::class, mappedBy: 'zone', cascade: ['persist'])]
     #[OrderBy(['id' => 'DESC'])]
     private Collection $weathers;
 
     public function __construct()
     {
-        $this->sporocarps = new ArrayCollection();
         $this->trees = new ArrayCollection();
+        $this->weathers = new ArrayCollection();
     }
 
-    #[Groups(Zone::class)]
-    public function getItems(): array
+    #[PrePersist]
+    public function onPrePersist(): void
     {
-        $return = [];
+        $weather = new Weather();
+        $weather->setState(WeatherStateEnum::STATE_SUNNY);
+        $weather->setHumidity(0);
+        $weather->setMaxTemperature(15);
+        $weather->setMinTemperature(15);
+        $this->addWeather($weather);
+    }
 
-        foreach ($this->trees as $tree) {
-            $return[] = $tree;
-
-            foreach ($tree->getMyceliums() as $mycelium) {
-                foreach ($mycelium->getSporocarps() as $sporocarp) {
-                    $return[] = $sporocarp;
-                }
-            }
-        }
-
-        return $return;
+    /** todo: this must be improve to avoid extra db query
+     */
+    #[Groups(Zone::class)]
+    public function getWeather(): Weather
+    {
+        return $this->weathers->first();
     }
 
     /**
@@ -109,30 +113,6 @@ class Zone
     /**
      * @return Collection
      */
-    public function getSporocarps(): Collection
-    {
-        return $this->sporocarps;
-    }
-
-    /**
-     * @param Sporocarp $sporocarp
-     *
-     * @return void
-     */
-    public function addSporocarp(Sporocarp $sporocarp): void
-    {
-        foreach ($this->sporocarps as $carp) {
-            if ($carp->getId() == $sporocarp->getId()) {
-                return;
-            }
-        }
-
-        $this->sporocarps[] = $sporocarp;
-    }
-
-    /**
-     * @return Collection
-     */
     public function getTrees(): Collection
     {
         return $this->trees;
@@ -145,13 +125,31 @@ class Zone
      */
     public function addTree(Tree $tree): void
     {
-        foreach ($this->trees as $mycel) {
-            if ($mycel->getId() == $tree->getId()) {
+        foreach ($this->trees as $t) {
+            if ($t->getId() === $tree->getId()) {
                 return;
             }
         }
 
+        $tree->setZone($this);
         $this->trees[] = $tree;
+    }
+
+    /**
+     * @param Weather $weather
+     *
+     * @return void
+     */
+    public function addWeather(Weather $weather): void
+    {
+        foreach ($this->weathers as $w) {
+            if ($w->getId() === $weather->getId()) {
+                return;
+            }
+        }
+
+        $weather->setZone($this);
+        $this->weathers[] = $weather;
     }
 
     /**

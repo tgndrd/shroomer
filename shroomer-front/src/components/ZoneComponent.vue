@@ -6,7 +6,16 @@ import TreeAdd from "@/components/TreeAdd.vue";
 import ItemTree from "@/components/item/ItemTree.vue";
 
 const route = useRoute()
-const zone = ref({name: String, trees: {}})
+const zone = ref({
+  name: String,
+  trees: {},
+  weather: {
+    humidity: Number,
+    maxTemperature: Number,
+    minTemperature: Number,
+    state: String,
+  }
+})
 
 onMounted(async () => {
   await refresh()
@@ -27,9 +36,10 @@ async function refresh() {
 <template>
   <div v-if="zone" class="text-center">
     <TreeAdd :zone="zone"/>
-    <p class="text-center text-gray-600">You are viewing {{zone.name}}</p>
-    <div class="overflow-x-auto overscroll-x-auto whitespace-nowrap w-screen p-5">
-      <item-tree v-for="tree in zone.trees" :tree="tree"/>
+    <p class="text-center text-gray-600 mb-4 pb-4">You are viewing {{zone.name}}</p>
+
+    <div class="overflow-x-auto overscroll-x-auto whitespace-nowrap w-screen p-5 cursor-default">
+      <item-tree v-for="tree in zone.trees" :tree="tree" :weatherState="zone.weather.state"/>
     </div>
   </div>
 </template>

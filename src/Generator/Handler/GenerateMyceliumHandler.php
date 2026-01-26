@@ -12,7 +12,7 @@ use Doctrine\ORM\EntityManagerInterface;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Scheduler\Attribute\AsPeriodicTask;
 
-#[AsPeriodicTask(frequency: '10 seconds')]
+#[AsPeriodicTask(frequency: '20 seconds')]
 class GenerateMyceliumHandler
 {
     public function __construct(

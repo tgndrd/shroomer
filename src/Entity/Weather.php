@@ -12,6 +12,7 @@ use Doctrine\ORM\Mapping\GeneratedValue;
 use Doctrine\ORM\Mapping\Id;
 use Doctrine\ORM\Mapping\JoinColumn;
 use Doctrine\ORM\Mapping\ManyToOne;
+use Symfony\Component\Serializer\Attribute\Groups;
 
 #[Entity(repositoryClass: WeatherRepository::class)]
 class Weather
@@ -23,17 +24,21 @@ class Weather
 
     // humidity percentage
     #[Column(type: Types::INTEGER, nullable: false)]
+    #[Groups(Zone::class)]
     private int $humidity;
 
     // max temperature (celsius)
     #[Column(type: Types::INTEGER, nullable: false)]
+    #[Groups(Zone::class)]
     private int $maxTemperature;
 
     // min temperature (celsius)
     #[Column(type: Types::INTEGER, nullable: false)]
+    #[Groups(Zone::class)]
     private int $minTemperature;
 
     #[Column(type: Types::STRING, nullable: false, enumType: WeatherStateEnum::class)]
+    #[Groups(Zone::class)]
     private WeatherStateEnum $state;
 
     #[ManyToOne(targetEntity: Zone::class, inversedBy: "weathers")]
